@@ -74,6 +74,7 @@ class classes extends abstractClass{
     # public function hello($name, $e=''){}
     // 子类定义抽象方法的参数类型不一样，会产生一个Fatal error
     # public function hello($name, $e='', $f){}
+    public function hello($name, $e='', $f='', $g=''){}
 }
 
 
