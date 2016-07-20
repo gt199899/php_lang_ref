@@ -228,7 +228,7 @@ $c->add();
 # echo $c::$param;
 $o->add();
 # echo $c::$param;
-classes::hello();
+# classes::hello();
 /**
  * trait的静态属性和静态方法和类的静态成员一样有效
  */
