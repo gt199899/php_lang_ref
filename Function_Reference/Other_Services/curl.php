@@ -14,8 +14,10 @@
 // 创建一个新cURL资源
 $curl = curl_init();
 
+$curl_url = "";
+
 // 设置URL和相应的选项
-curl_setopt($curl, CURLOPT_URL, "http://root.webghome.com/sys/curl.php");
+curl_setopt($curl, CURLOPT_URL, $curl_url);
 
 // 设置为true将curl_exec()获取的信息以字符串返回，而不是直接输出。
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
