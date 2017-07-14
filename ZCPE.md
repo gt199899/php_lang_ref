@@ -2,8 +2,36 @@
 #List of Exam Topics
 ## PHP Basics
 1. Syntax
+	1. PHP tags
+	- Instruction separation
+	- Escaping from HTML
+	- Comments
 - Operators
+	1. Operator Precedence
+	- Arithmetic Operators
+	- Assignment Operators
+	- Bitwise Operators
+	- Comparison Operators
+	- Error Control Operators
+	- Execution Operators
+	- Incrementing/Decrementing Operators
+	- Logical Operators
+	- String Operators
+	- Array Operators
+	- Type Operators
 - Variables
+	1. Introduction
+	- Booleans
+	- Integers
+	- Floating point numbers
+	- Strings
+	- Arrays
+	- Objects
+	- NULL
+	- Resources
+	- Callbacks
+	- Pseudo-types and variables used in this documentation
+	- Type Juggling
 - Control Structures
 - Language Constructs and Functions
 - Namespaces 
@@ -60,7 +88,7 @@
 - Magic (_*) Methods
 - Instance Methods & Properties
 - SPL
-- Traits
+- [Traits](Classes_and_Objects/Trait.php)
 
 ##Databases & SQL
 1. SQL
