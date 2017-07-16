@@ -20,8 +20,11 @@
  * case2：yield会返回一个值给循环调用此生成器的代码；
  * case3：生成器函数被调用一次，就返回一个按顺序取到的yield的值，并且暂停执行，直到下次被调用；
  * case4：可以指定键名来生成值；
- * case5：yield可以在没有参数传入的情况下被调用来生成一个NULL值并配对一个自动的键名。
- *
+ * case5：yield可以在没有参数传入的情况下被调用来生成一个NULL值并配对一个自动的键名；
+ * case6：使用引用来生成值；
+ * case7：PHP7中，yield可以通过from关键字，从别的生成器，数组或者Traversable object中获取返回值；
+ * case8：生成器中不能返回值，否则产生一个错误(PHP7中不会，和return空一样的效果)，但是return空是一个有效的语法并且会终止生成器继续执行；
+ * case9：生成器返回的是Generator对象，可以使用Generator对象的方法来控制生成器；
  */
 
 namespace case1;
@@ -110,7 +113,7 @@ foreach (mul_yield() as $value) {
  * 11
  */
 
-namespace case3;
+namespace case4;
 $input = <<<'EOF'
 1;PHP;Likes dollar signs
 2;Python;Likes whitespace
@@ -143,7 +146,7 @@ foreach (input_parser($input) as $id => $fields) {
 //    Ruby
 //    Likes blocks
 
-namespace case4;
+namespace case5;
 function gen_three_nulls()
 {
     foreach (range(1, 3) as $i) {
@@ -162,3 +165,111 @@ var_dump(iterator_to_array(gen_three_nulls()));
 //  NULL
 //}
 
+namespace case6;
+function &gen_reference()
+{
+    $value = 3;
+
+    while ($value > 0) {
+        yield $value;
+    }
+}
+
+/*
+ * 我们可以在循环中修改$number的值，而生成器是使用的引用值来生成，所以gen_reference()内部的$value值也会跟着变化。
+ */
+foreach (gen_reference() as &$number) {
+    echo (--$number) . '... ';
+}
+/**
+ * 输出：
+ * 2... 1... 0...
+ */
+
+namespace case7;
+function count_to_ten()
+{
+    yield 1;
+    yield 2;
+    yield from [3, 4];
+    yield from new \ArrayIterator([5, 6]);
+    yield from seven_eight();
+    yield 9;
+    yield 10;
+}
+
+function seven_eight()
+{
+    yield 7;
+    yield from eight();
+}
+
+function eight()
+{
+    yield 8;
+}
+
+foreach (count_to_ten() as $num) {
+    echo "$num ";
+}
+/**
+ * 输出：
+ * 1 2 3 4 5 6 7 8 9 10
+ */
+
+namespace case8;
+function one_three()
+{
+    for ($i = 1; $i <= 3; $i++) {
+        yield $i;
+        if ($i == 2) return;
+    }
+}
+foreach (one_three() as $value) {
+    echo $value . " ";
+}
+/**
+ * 输出：
+ * 1 2
+ */
+function one_four()
+{
+    for ($i = 1; $i <= 4; $i++) {
+        yield $i;
+        return $i;
+    }
+}
+$gen = one_four();
+foreach ($gen as $value) {
+    echo $value . " ";
+}
+echo $gen->getReturn();
+/**
+ * 手册上说生成器函数不能有返回值，否则会产生一个编译错误；
+ * 但是PHP7这里返回值了之后，效果和返回空一样都是终止执行，并没有报错；
+ * 使用getReturn()方法可以获取返回值；
+ * 输出：
+ * 1 1
+ */
+
+namespace case9;
+function one_four()
+{
+    for ($i = 1; $i <= 4; $i++) {
+        yield $i;
+    }
+}
+$gen = one_four();
+while (1) {
+    $current = $gen->current();
+    // 迭代器中没有值，返回空则终止循环
+    if(!$current){
+        break;
+    }
+    echo $current . " ";
+    $gen->next();
+}
+/**
+ * 输出：
+ * 1 2 3 4
+ */
