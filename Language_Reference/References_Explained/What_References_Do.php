@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | Created by im-server.
 // +----------------------------------------------------------------------
-// | Language Reference >> References Explained >> What References Are
+// | Language Reference >> References Explained >> What References Do
 // +----------------------------------------------------------------------
 // | Author: alexander <gt199899@gmail.com>
 // +----------------------------------------------------------------------
