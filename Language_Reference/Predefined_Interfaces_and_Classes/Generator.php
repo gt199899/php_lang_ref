@@ -21,18 +21,20 @@
  *      public mixed throw ( Throwable $exception )
  *      public bool valid ( void )
  *      public void __wakeup ( void )
- *
+
  */
 
 /**
  * current 返回当前产生的值
  */
-function t(){
-    for($i=1;$i<=10;$i++){
+function t()
+{
+    for ($i = 1; $i <= 10; $i++) {
         yield $i;
     }
     return 100;
 }
+
 $gen = t();
 //var_dump($gen->current());
 var_dump($gen->getReturn());
@@ -42,7 +44,7 @@ var_dump($gen->getReturn());
  * getReturn 返回生成器函数中return值
  * 确保使用getReturn的时候生成器函数返回return值而不是yield值，否则会报错；
  */
-$gen = (function() {
+$gen = (function () {
     yield 1;
     yield 2;
 
@@ -63,14 +65,14 @@ echo $gen->getReturn(), PHP_EOL;
  * key 返回yield值的key
  * 如果没有key，返回0
  */
-$gen = (function() {
+$gen = (function () {
     yield 1 => 2;
 })();
 var_dump($gen->key());
 var_dump($gen->current());
 // 输出：
 // int(1)int(2)
-$gen = (function() {
+$gen = (function () {
     yield 1;
 })();
 var_dump($gen->key());
@@ -82,7 +84,7 @@ var_dump($gen->current());
  * next 生成器继续执行
  * 生成器已经执行到末尾，不会自动next到开始
  */
-$gen = (function(){
+$gen = (function () {
     yield 1;
     yield 2;
     yield 3;
@@ -120,6 +122,36 @@ $printer->send('How are you?');
 // Hello world!
 // How are you?
 //
+
+// +----------------------------------------------------------------------
+/**
+ * 以下是一个通过send和yield实现的双向通信的例子，从鸟哥哪里拿来的
+ * 需要注意的是：
+ *      官网说法：send方法，向生成器传入一个值，并且把这个值作为当前执行yield的结果，并且继续执行生成器；
+ *      也就是说，send方法做了三件事情；
+ *      send方法返回的值很有意思，他返回生成器里面yield设置的值，注意，不是yield表达式返回的值，一定要注意；
+ */
+function gen()
+{
+    $ret = (yield 'yield1');
+    var_dump($ret);
+    $ret = (yield 'yield2');
+    var_dump($ret);
+}
+$gen = gen();
+// 这里输出当前生成器的值，第一个yield的值：yield1
+var_dump($gen->current());
+// 这里向生成器发送ret1，并且继续执行生成器
+var_dump($gen->send('ret1'));
+var_dump($gen->send('ret2'));
+
+// 输出：
+// string(6) "yield1"
+// string(4) "ret1"   (the first var_dump in gen)
+// string(6) "yield2" (the var_dump of the ->send() return value)
+// string(4) "ret2"   (again from within gen)
+// NULL               (the return value of ->send())
+// +----------------------------------------------------------------------
 
 /**
  * throw 向生成器中抛入一个异常
