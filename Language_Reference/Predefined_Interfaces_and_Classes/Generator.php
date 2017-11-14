@@ -21,7 +21,6 @@
  *      public mixed throw ( Throwable $exception )
  *      public bool valid ( void )
  *      public void __wakeup ( void )
-
  */
 
 /**
@@ -129,7 +128,7 @@ $printer->send('How are you?');
  * 需要注意的是：
  *      官网说法：send方法，向生成器传入一个值，并且把这个值作为当前执行yield的结果，并且继续执行生成器；
  *      也就是说，send方法做了三件事情；
- *      send方法返回的值很有意思，他返回生成器里面yield设置的值，注意，不是yield表达式返回的值，一定要注意；
+ *      send方法返回的值很有意思，他返回生成器继续执行的下一个yield返回的值，注意，不是本次yield表达式返回的值，一定要注意；
  */
 function gen()
 {
@@ -138,11 +137,21 @@ function gen()
     $ret = (yield 'yield2');
     var_dump($ret);
 }
+
 $gen = gen();
 // 这里输出当前生成器的值，第一个yield的值：yield1
 var_dump($gen->current());
-// 这里向生成器发送ret1，并且继续执行生成器
+// 这里向生成器发送ret1，并且继续执行生成器到下一个yield，执行生成器遇到gen里面第一个var_dump，则输出第一个yield表达式的值，即为send传入的值ret1；
+// 这里的var_dump($gen->send)，则为send方法的返回值，send方法的返回值为下一个yield表达式返回的值，即为yield2；
+// 所以这里输出：
+//      string(4) "ret1"   (the first var_dump in gen)
+//      string(6) "yield2" (the var_dump of the ->send() return value)
 var_dump($gen->send('ret1'));
+// 这里向生成器发送ret2，并且继续执行生成器，执行生成器遇到gen里面第二个var_dump，输出第二个yield表达式的值，即为send传入的值ret2；
+// 由于生成器后面没有yield表达式，所以send方法返回为null
+// 故输出：
+//      string(4) "ret2"   (again from within gen)
+//      NULL               (the return value of ->send())
 var_dump($gen->send('ret2'));
 
 // 输出：
