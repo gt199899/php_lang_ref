@@ -356,7 +356,7 @@ echo $fun2() . PHP_EOL;
 namespace case10;
 
 class A {
-    private static $sfoo = 1;
+    public static $sfoo = 1;
     private $ifoo = 2;
 }
 $cl1 = static function() {
